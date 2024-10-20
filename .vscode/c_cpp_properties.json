@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/curl/include/curl", // Adjusted to include curl headers
+                "${workspaceFolder}/curl",           // Base directory for curl
+                "C:/Users/drkab/AppData/Local/Programs/Python/Python312/Lib/site-packages/pybind11/include/pybind11",
+                "C:/Users/drkab/AppData/Local/Programs/Python/Python312/include",
+                "C:/msys64/ucrt64/include"           // Added for additional libraries
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "windows-gcc-x64",
+            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe"
+        }
+    ],
+    "version": 4
+}

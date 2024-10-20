@@ -1,0 +1,4 @@
+C:/Users/drkab/OneDrive/Desktop/C++/build/CMakeFiles/FreeRice.dir
+C:/Users/drkab/OneDrive/Desktop/C++/build/CMakeFiles/CopyPythonFiles.dir
+C:/Users/drkab/OneDrive/Desktop/C++/build/CMakeFiles/edit_cache.dir
+C:/Users/drkab/OneDrive/Desktop/C++/build/CMakeFiles/rebuild_cache.dir
