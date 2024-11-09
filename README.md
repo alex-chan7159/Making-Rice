@@ -13,4 +13,4 @@ Interacts with Free Rice HTTPS API to answer questions which donate 10 grains of
   - Makes requests at 6 second intervals, generating over 1 million grains of rice weekly!
   - (Note: A 66.7% increase in donation efficiency compared to a human that answers questions 24 hours a day.)
 
-Has donated 2512420 rice as of November 9 since started running on October 24!
+Has donated 2 512 420 rice as of November 9 since started running on October 24!
