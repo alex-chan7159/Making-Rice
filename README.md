@@ -3,6 +3,10 @@ Free Rice Program!
   - Date: October 4th, 2024
   - Version: November 9th, 2024
 
+How to use
+  - Change username and password located in the login method to match your FreeRice account
+  - Enjoy!
+
 Interacts with Free Rice HTTPS API to answer questions which donate 10 grains of rice upon completion to The United Nations World Food Programme!
   - Uses libcurl for API requests
   - Uses spacy NLP model from python to identify correct answers to questions, each correct answer donates 10 grains of rice
