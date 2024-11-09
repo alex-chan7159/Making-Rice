@@ -3,26 +3,21 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
-//#include "../curl/include/curl/curl.h"
 #include <curl/curl.h>
 #include <pybind11/embed.h>
 #include <pybind11/stl.h>  // For STL support
 #include <thread>
 #include <chrono>
-//#include "C:\Users\drkab\OneDrive\Documents\GitHub\curl\include\curl\curl.h"
 using namespace std;
-
-//C:\Users\drkab\OneDrive\Desktop\C++\build>cmake --build .
-
 /*
 Free Rice Program
 Author: Alex Chan
 Date: October 4th, 2024
-Version: October 20th, 2024
+Version: November 9th, 2024
 Desc: Interacts with Free Rice HTTPS API to answer questions which donate 10 grains of rice upon completion to The United Nations World Food Programme!
 -Uses libcurl for API requests
 -Uses spacy NLP model from python to identify correct answers to questions
--Makes requests at 6 second intervals, generating over 1 million grains of rice weekly.
+-Makes requests at 6 second intervals, generating over 1 million grains of rice weekly!
 (Note: A 66.7% increase in donation efficiency compared to a human that answers questions 24 hours a day.)
 */
 
@@ -54,36 +49,25 @@ string extractString(string st, const string key, const string end) {
     if (endPos == std::string::npos) {
         return ""; // Malformed JSON, no closing quote
     }
-    //cout << "DID WE FIND ANY RICE" << endl;
     return st.substr(startPos, endPos - startPos); // Extract the token
 }
 
 size_t write_data(char *buffer, size_t itemsize, size_t nitems, void *ignorethis) {
     size_t bytes = itemsize * nitems;
     int linenumber = 1;
-    //printf("New chunk (%zu bytes)\n", bytes);
-    //printf("%d:\t", linenumber);
-    //for (int i=0; i < bytes; i++) {
-        //printf("%c", buffer[i]);
-        //if (buffer[i] == '\n') {
-            //linenumber++;
-            //printf("%d:\t", linenumber);
-        //}
-    //}
-    
     json.append(buffer, bytes); // Append the buffer content to the global json string
-   // for (int i=0; i < bytes; i++) {
-        //cout << buffer[i];
-    //}
-    //printf("\n\n");
     return bytes;
 }
 
 CURLcode login(CURL *curl, std::string &readBuffer) {
     // Set the URL for the login request
     curl_easy_setopt(curl, CURLOPT_URL, "https://accounts.freerice.com/auth/login?_format=json");
+    
     // Specify the JSON data for login
-    const char* jsonData = "{\"username\":\"Alex C 7159\", \"password\":\"freeRiceAccount\"}";
+    const char* jsonData = "{\"username\":\"YOUR USERNAME HERE\", \"password\":\"YOUR PASSWORD HERE\"}";
+    // EXAMPLE USERNAME AND PASSWORD
+    //const char* jsonData = "{\"username\":\"Alex C 7159\", \"password\":\"Example Password\"}";
+    
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonData);
 
     // Handle response data
@@ -195,13 +179,9 @@ void extractGame() {
         answers.clear();
     }
     gameId = extractString(json, "games\",\"id\":\"", "\"");
-    //unordered_map<string, string> hash_map;
     questionWord = extractString(json, "\"text\":\"", " means:"); //word means!!! dont include the means
     cout << "question word: " << questionWord << "!!" << endl;
     questionId = extractString(json, "\"question_id\":\"", "\"");
-    //cout << "question word is " << questionWord << "and id is " << questionId << endl;
-
-    //hash_map[questionWord] = questionId;
 
     const string key = "\"options\":[";
     size_t startPos = json.find(key);
@@ -241,10 +221,6 @@ void extractGame() {
         answers.push_back(text);
         optionStart = optionEnd + 1; // Move past the current option
     }
-    //for (const auto &pair : hash_map) {
-        //cout << pair.first << ": " << pair.second << endl;
-    //}
-    //cout << "game id is: " << gameId << endl;
 }
 
 map<string, float> getSimilarities(py::object nlp_model, string questionWord, vector<string> answers) {
@@ -262,12 +238,6 @@ map<string, float> getSimilarities(py::object nlp_model, string questionWord, ve
         float score = item.second.cast<float>();              // Value (similarity score)
         similarities_map[answer] = score;                     // Store in C++ map
     }
-
-     // Print the results
-    //for (const auto& pair : similarities_map) {
-        //cout << "Answer: " << pair.first << ", Similarity Score: " << pair.second << endl;
-    //}
-
     return similarities_map;
 }
 
@@ -283,7 +253,6 @@ int main(void) {
     py::object nlp_model = synonyms.attr("NLPModel")();
 
     map<string, float> answerSimilarities;
-    //map<string, float> answerSimilarities = getSimilarities(questionWord, answers);
 
     CURL *curl = curl_easy_init();
     if(curl) {
@@ -306,20 +275,11 @@ int main(void) {
                 }
 
                 cout << "userid is" << userId << "\n the token is " << token  << endl;
-                
-                result = apiRequestWithToken(curl, "https://engine.freerice.com/games/ce4d922a-29e3-4bcc-a10d-4ea1723155b8", "get"); //note!!! if you use a game id for too long, eventually the words become very difficult
+
+                result = apiRequestWithToken(curl, "https://engine.freerice.com/games/YOUR GAME ID HERE!!!!!!!!!!!!!!", "get")
+                //example endpoint format:
+                //result = apiRequestWithToken(curl, "https://engine.freerice.com/games/ce4d922a-29e3-4bcc-a10d-4ea1723155b8", "get"); //note!!! if you use a game id for too long, eventually the words become very difficult
                 do {
-                    // Now you can make another API request using the token
-                //result = apiRequestWithToken(curl, "https://engine.freerice.com/users/23add682-202f-4054-951c-7249e4e65917?_format=json", "get");
-                //cout << "blah blah blah" << json << endl;
-                //const char* gameEndpoint = ("https://engine.freerice.com/games/" + gameId).c_str();
-                
-                //result = apiRequestWithToken(curl, gameEndpoint, "get");
-
-                //string questionId = "b755e843-8142-5cbd-81db-c8cfc3d3b51d"; // Example question ID
-                //string selectedOptionId = "609c5d21-29a0-4ef7-af90-b77e4857931a"; // Example selected option ID
-
-                //submitAnswer(curl, questionId, selectedOptionId); // Submit the answer
                 extractGame();
                 json.clear();
                 // Ensure that we have a valid question
@@ -327,9 +287,6 @@ int main(void) {
                     cout << "Failed to retrieve new question." << endl;
                     break; // Exit if we can't get a new question
                 }
-                //for (string answer : answers) {
-                //cout << answer << endl;
-                //}
                 answerSimilarities = getSimilarities(nlp_model, questionWord, answers);
                 string maxKey;
                 float maxValue = -1; // Initialize to the lowest possible float, wait no similarity sometimes returns negative
@@ -340,18 +297,11 @@ int main(void) {
                         maxKey = pair.first;
                     }
                 }
-
-                //cout << maxKey << " has a sim of " << maxValue << endl;
-                //cout << questionId << endl;
-                //cout << questionId << "     " << hash_map[maxKey] << endl;
                 submitAnswer(curl, questionId, hash_map[maxKey]);
                 previousQuestion = questionWord;
 
                 answerSimilarities.clear();
                 this_thread::sleep_for(chrono::seconds(5));
-                //cout << "AHHHHHHHHHHHHH" << endl;
-                //result = apiRequestWithToken(curl, "https://engine.freerice.com/games/cb2902c4-8085-43ad-a32c-139799b21ad2", "get");
-                //result = apiRequestWithToken(curl, gameEndpoint, "get");
                 
                 cout << "trying again" << endl;
                 } while (result == CURLE_OK);
@@ -361,7 +311,6 @@ int main(void) {
                 }
 
                 // Clean up
-                //curl_slist_free_all(headers); // Free the header list
                 curl_easy_cleanup(curl); // Clean up curl session
 
     } else {
@@ -369,4 +318,5 @@ int main(void) {
     }
 
     return EXIT_SUCCESS;
+}
 }
